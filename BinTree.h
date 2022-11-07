@@ -17,7 +17,7 @@ class BinTree
 
         //Recursive helpers
         void InsertRecursive(Node<T>* parent, Node<T>* key);
-        Node<T>* SearchRecursive(T &key);
+        Node<T>* SearchRecursive(Node<T>* node, T &key);
         Node<T>* RemoveRecursive(Node<T>* root, Node<T>* parent, Node<T>* node);
         Node<T>* GetParentRecursive(Node<T>* child);
 
@@ -79,16 +79,16 @@ Node<T>* BinTree<T>::LeftmostNode(Node<T>* node)
     while(curr && curr->left != NULL) curr = curr->left;
     return curr;
 }
-
+template<typename T>
 Node<T>* GetParentRecursive(Node<T>* root, Node<T>* node)
 {
-    if(root == nullptr) return null;
+    if(root == nullptr) return nullptr;
 
-    if(root->GetLeft == node || root->GetRight == node) return root;
+    if(root->GetLeft() == node || root->GetRight() == node) return root;
 
-    if(node->GetData < root->GetData) return GetParentRecursive(root->GetLeft(), node);
+    if(node->GetData() < root->GetData()) return GetParentRecursive(root->GetLeft(), node);
 
-    return GetParentRecursive(node->GetRight, node);
+    return GetParentRecursive(node->GetRight(), node);
 }
 
 template<typename T>
