@@ -35,7 +35,7 @@ int main()
 {
     vector<Integral> integrals;
     string fileName;
-    cout << "What's the filename? ";
+    cout << "What's the filename? "; 
     //cin >> fileName;
     fileName = "sample.txt";
     cout << endl;
@@ -90,18 +90,21 @@ Integral parseLine(string polynomial)
         negative = false;
     }
 
-    if(bounds[0] == '|' && !temp.indefinite)
+    if(bounds.size() > 0)
     {
-        bounds.erase(0,1);
-        string lower = bounds;
-
-        if(lower[0] == '-')
+        if(bounds[0] == '|' && !temp.indefinite)
         {
+            bounds.erase(0,1);
+            string lower = bounds;
+
+            if(lower[0] == '-')
+            {
             negative = true;
             lower.erase(0,1);
+            }
+            if(lower.length() != 0) temp.lowerBound = stoi(lower) * (negative ? -1 : 1);
+            negative = false;
         }
-        if(lower.length() != 0) temp.lowerBound = stoi(lower) * (negative ? -1 : 1);
-        negative = false;
     }
 
     //-------Main integral---------//
@@ -124,7 +127,7 @@ Integral parseLine(string polynomial)
                 polynomial.erase(0,1);
                 checkChar = polynomial[0];
             }
-            tempTerm.SetCoeff(stod(value));
+            tempTerm.SetCoeff(stoi(value));
             tempTerm.SetExpon(0);
         }
         else
@@ -133,7 +136,7 @@ Integral parseLine(string polynomial)
             polynomial.erase(polynomial.find(coefficient), coefficient.length());
 
             if(coefficient.size() == 0) tempTerm.SetCoeff(1);
-            else tempTerm.SetCoeff(stod(coefficient));
+            else tempTerm.SetCoeff(stoi(coefficient));
 
         if(polynomial[0] != 'x')
         {
@@ -163,7 +166,7 @@ Integral parseLine(string polynomial)
             checkChar = polynomial[0];
         }
         
-        double exponentNum = stod(exponent);
+        double exponentNum = stoi(exponent);
         if(negative) exponentNum *= -1;
         tempTerm.SetExpon(exponentNum);
 
