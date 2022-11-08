@@ -60,8 +60,6 @@ Integral parseLine(string polynomial)
     Integral temp;
 
     //----integral boundaries-----//
-
-    
     string bounds1 = polynomial.substr(0, polynomial.find('|'));
     polynomial.erase(0, bounds1.size());
     removeSpaces(bounds1);
@@ -70,21 +68,20 @@ Integral parseLine(string polynomial)
     polynomial.erase(0, bounds2.size() + 1);
 
     string bounds = bounds1 + bounds2;
-    
 
     string upper = bounds.substr(0, bounds.find("|"));
     bounds.erase(bounds.find(upper), upper.length());
 
     bool negative = false;
     
-    if(upper.size() == 0)
+    if(upper.size() == 0) //if there is no upper bound
     {
-        temp.indefinite = true;
+        temp.indefinite = true; //set integral to indefinite
         bounds.erase(0,1);
     }
     else
     {
-        if(upper[0] == '-')
+        if(upper[0] == '-') //if the upperbound is negative
         {
             negative = true;
             upper.erase(0,1);
@@ -134,7 +131,6 @@ Integral parseLine(string polynomial)
         {
             string coefficient = polynomial.substr(0, polynomial.find("x"));
             polynomial.erase(polynomial.find(coefficient), coefficient.length());
-            string term = "";
 
             if(coefficient.size() == 0) tempTerm.SetCoeff(1);
             else tempTerm.SetCoeff(stod(coefficient));
@@ -142,7 +138,6 @@ Integral parseLine(string polynomial)
         if(polynomial[0] != 'x')
         {
             tempTerm.SetExpon(0);
-            //continue for next term
         }
         else if(polynomial[1] != '^')
         {

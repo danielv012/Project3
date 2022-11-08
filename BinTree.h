@@ -29,10 +29,6 @@ class BinTree
         {
             return GetParentRecursive(root, child);
         }
-
-        //--------Output & Fraction Stuff------//
-        string simplifyFraction(int num, int denom);
-        int gcd(int x, int y);
         
     public:
         //----------Constructors------//
@@ -177,7 +173,6 @@ Node<T>* BinTree<T>::RemoveRecursive(Node<T>* root, Node<T>* parent, Node<T>* no
     }
 
     return true;
-
 }
 
 template <typename T>
@@ -191,9 +186,6 @@ void BinTree<T>::PrintRecursive(Node<T>* node)
   T term = *(node->GetData()); 
   if(term.IsFirst())
   {
-    // cout << term.GetCoeff()) < 0 ? "-" : "");
-    // if(term.GetCoeff() < 0) term.SetCoeffStr(term.GetCoeffStr().substr(1));
-
     cout << ((term.GetCoeffStr() == "1" || term.GetCoeffStr() == "0") ? "" : term.GetCoeffStr())
      << (term.GetCoeffStr() == "0" ? "" : "x");
     cout << (term.GetExpon() > 1 ? "^" : "") << term.GetExponStr();
@@ -204,7 +196,6 @@ void BinTree<T>::PrintRecursive(Node<T>* node)
     if(term.GetCoeff() < 0)
     {
         cout << "- ";
-        // term.SetCoeff(term.GetCoeff() * -1);
         term.SetCoeffStr(term.GetCoeffStr().substr(1));
     }
     else cout << "+ ";
@@ -215,53 +206,6 @@ void BinTree<T>::PrintRecursive(Node<T>* node)
 
   PrintRecursive(node->GetRight()); 
 }
-
-template <typename T>
-string BinTree<T>::simplifyFraction(int num, int denom)
-{
-    string fraction = "";
-
-    if(denom == 0
-    || denom == 1
-    || num == 0
-    || num == 1)
-    {
-        //continue;
-    }
-    else
-    {
-        int gcdNum = gcd(num, denom);
-        num/=gcdNum;
-        denom/=gcdNum;
-    }
-
-    fraction = to_string(num) + "/" + to_string(denom);
-    return fraction;
-}
-
-template <typename T>
-int BinTree<T>::gcd(int x, int y)
-{
-    x = abs(x);
-    y = abs(y);
-
-    if(y == 0)
-    {
-        return x;
-    }
-    else if(x > y)
-    {
-        return gcd(y, x%y);
-    }
-    else if(x < y)
-    {
-        return gcd(x, y%x);
-    }
-
-    return x;
-}
-
-#endif /* BinTree_h */
 
 template <typename T>
 double BinTree<T>::EvaluateRecursive(Node<T>* node, int num) 
@@ -280,3 +224,6 @@ double BinTree<T>::EvaluateRecursive(Node<T>* node, int num)
 
   return sum;
 }
+
+#endif /* BinTree_h */
+
