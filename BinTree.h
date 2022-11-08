@@ -59,18 +59,22 @@ Node<T>* BinTree<T>::SearchRecursive(Node<T>* node, T &key)
 
 template<typename T>
 void BinTree<T>::InsertRecursive(Node<T>* parent, Node<T>* key)
-        {
-            if(key->GetData() < parent->GetData())
-            {
-                if(parent->GetLeft() == nullptr) parent->SetLeft(key);
-                else InsertRecursive(parent->GetLeft(), key);
-            }
-            else
-            {
-                if(parent->GetRight() == nullptr) parent->SetRight(key);
-                else InsertRecursive(parent->GetRight(), key);
-            }
-        }
+{
+    if(key->GetData() < parent->GetData())
+    {
+        if(parent->GetLeft() == nullptr) parent->SetLeft(key);
+        else InsertRecursive(parent->GetLeft(), key);
+    }
+    else if(key->GetData() == parent->GetData())
+    {
+        parent->GetData()->SetCoeff(parent->GetData()->GetCoeff() + key->GetData()->GetCoeff());
+    }
+    else
+    {
+        if(parent->GetRight() == nullptr) parent->SetRight(key);
+        else InsertRecursive(parent->GetRight(), key);
+    }
+}
 
 template<typename T>
 Node<T>* BinTree<T>::LeftmostNode(Node<T>* node)

@@ -6,6 +6,8 @@
 //  Created by Daniel Vayman on 11/1/22.
 //
 
+//TODO: account for + in polynomial and fix insert function
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -105,7 +107,7 @@ Integral parseLine(string polynomial)
     int coefficient = stoi(term.substr(0, term.find('x')));
     tempTerm.SetCoeff(coefficient);
 
-    term.erase(0, term.find('x') + 1);
+    term.erase(0, term.find('x') + 2);
 
     int exponent = stoi(term);
     tempTerm.SetExpon(exponent);
@@ -116,6 +118,7 @@ Integral parseLine(string polynomial)
 
     tempPoly.Insert(tempNode);
     }
+    temp.polynomial = tempPoly;
     
     return temp;
 }

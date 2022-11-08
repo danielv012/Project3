@@ -24,6 +24,8 @@ class Term
 
         //-----Overloaed Operators-----//
 
+        bool operator==(Term &right);
+
 };
 
 #endif /* Term_h */
