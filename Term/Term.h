@@ -8,22 +8,37 @@
 #ifndef Term_h
 #define Term_h
 
+using namespace std;
+
 class Term
 {
     private:
         double coeff;
         double expon;
+        string coeffStr;
+        string exponStr;
+        bool first;
     public:
         Term();
         Term(Term &obj);
 
         void Integrate();
 
-        void SetCoeff(int num) {coeff = num;}
-        int GetCoeff() {return coeff;}
+        void SetCoeff(double num) {coeff = num;}
+        double GetCoeff() {return coeff;}
 
-        void SetExpon(int num) {expon = num;}
-        int GetExpon() {return expon;}
+        void SetExpon(double num) {expon = num;}
+        double GetExpon() {return expon;}
+
+        void SetCoeffStr(string str) {coeffStr = str;}
+        string GetCoeffStr() {return coeffStr;}
+
+        void SetExponStr(string str) {exponStr = str;}
+        string GetExponStr() {return exponStr;}
+
+
+        void SetFirst(bool check) {first = check;}
+        bool IsFirst() {return first;}
 
         //-----Overloaed Operators-----//
 

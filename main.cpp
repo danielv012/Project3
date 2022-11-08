@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <vector>
 #include "BinTree.h"
 #include "Term/Term.h"
@@ -26,6 +27,9 @@ struct Integral
 };
 
 Integral parseLine(string polynomial);
+void displayIntegrals(vector<Integral> integrals);
+double evaluate(Integral integral);
+void removeSpaces(string &str);
 
 int main()
 {
@@ -34,6 +38,7 @@ int main()
     cout << "What's the filename? ";
     //cin >> fileName;
     fileName = "sample.txt";
+    cout << endl;
 
     ifstream file;
     file.open(fileName);
@@ -41,9 +46,12 @@ int main()
     string polynomial = "";
     while(getline(file, polynomial))
     {
+        if(polynomial.size() == 0) break;
         Integral tempPolynomial = parseLine(polynomial);
         integrals.push_back(tempPolynomial);
     }
+
+    displayIntegrals(integrals);
 
 }
 
@@ -53,75 +61,120 @@ Integral parseLine(string polynomial)
 
     //----integral boundaries-----//
 
+    
+    string bounds1 = polynomial.substr(0, polynomial.find('|'));
+    polynomial.erase(0, bounds1.size());
+    removeSpaces(bounds1);
 
-    string lower = polynomial.substr(0, polynomial.find("|"));
-    polynomial.erase(polynomial.find(lower), lower.length());
+    string bounds2 = polynomial.substr(polynomial.find('|'), polynomial.find(' '));
+    polynomial.erase(0, bounds2.size() + 1);
+
+    string bounds = bounds1 + bounds2;
+    
+
+    string upper = bounds.substr(0, bounds.find("|"));
+    bounds.erase(bounds.find(upper), upper.length());
 
     bool negative = false;
     
-    if(lower.size() == 0)
+    if(upper.size() == 0)
     {
         temp.indefinite = true;
+        bounds.erase(0,1);
     }
     else
     {
-        if(lower[0] == '-')
-        {
-            negative = true;
-            lower.erase(0,1);
-        }
-        temp.lowerBound = stoi(lower) * (negative ? -1 : 1);
-        negative = false;
-    }
-
-
-    if(polynomial[0] == '|')
-    {
-        polynomial.erase(0,1);
-        string upper = polynomial.substr(0, polynomial.find(" "));
-        polynomial.erase(polynomial.find(lower), lower.length() + 1);
-
-
         if(upper[0] == '-')
         {
             negative = true;
             upper.erase(0,1);
         }
-        if(upper.length() != 0) temp.upperBound = stoi(upper) * (negative ? -1 : 1);
+        temp.upperBound = stoi(upper) * (negative ? -1 : 1);
         negative = false;
     }
 
-    cout << temp.upperBound << " " << temp.lowerBound;
+    if(bounds[0] == '|' && !temp.indefinite)
+    {
+        bounds.erase(0,1);
+        string lower = bounds;
+
+        if(lower[0] == '-')
+        {
+            negative = true;
+            lower.erase(0,1);
+        }
+        if(lower.length() != 0) temp.lowerBound = stoi(lower) * (negative ? -1 : 1);
+        negative = false;
+    }
 
     //-------Main integral---------//
+    removeSpaces(polynomial);
 
     BinTree<Term> tempPoly;
 
     while(polynomial.length() > 0)
-    {
-        string term = polynomial.substr(0, polynomial.find(" "));
-        polynomial.erase(polynomial.find(term), term.length() + 1);
-
+    {   
         Term tempTerm;
 
-        string coeffString = term.substr(0, term.find('x'));
-        tempTerm.SetCoeff(stoi(coeffString));
-
-        if(term.size() > coeffString.size() + 1)
+        string value = "";
+        string bit = polynomial.substr(0, polynomial.find('d'));
+        if(bit.find('x') == string::npos)
         {
-            term.erase(0, term.find('x') + 2);
-
-            int exponent = stoi(term);
-            tempTerm.SetExpon(exponent);
-        }
-        else if (term.find('x') == -1)
-        {
+            char checkChar = polynomial[0];
+            while(checkChar != '-' && checkChar != '+' && checkChar != 'd')
+            {
+                value += checkChar;
+                polynomial.erase(0,1);
+                checkChar = polynomial[0];
+            }
+            tempTerm.SetCoeff(stod(value));
             tempTerm.SetExpon(0);
         }
         else
         {
-            tempTerm.SetExpon(1);
+            string coefficient = polynomial.substr(0, polynomial.find("x"));
+            polynomial.erase(polynomial.find(coefficient), coefficient.length());
+            string term = "";
+
+            if(coefficient.size() == 0) tempTerm.SetCoeff(1);
+            else tempTerm.SetCoeff(stod(coefficient));
+
+        if(polynomial[0] != 'x')
+        {
+            tempTerm.SetExpon(0);
+            //continue for next term
         }
+        else if(polynomial[1] != '^')
+        {
+            tempTerm.SetExpon(1);
+            polynomial.erase(0,1);
+        }
+        else
+        {
+        polynomial.erase(0,2);
+
+        bool negative = false;
+        if(polynomial[0] == '-')
+        {
+            negative = true;
+            polynomial.erase(0,1);
+        }
+        string exponent = "";
+        char checkChar = polynomial[0];
+        while(checkChar != '-' && checkChar != '+' && checkChar != 'd')
+        {
+            exponent +=checkChar;
+            polynomial.erase(0,1);
+            checkChar = polynomial[0];
+        }
+        
+        double exponentNum = stod(exponent);
+        if(negative) exponentNum *= -1;
+        tempTerm.SetExpon(exponentNum);
+
+        }
+        }
+        
 
         tempTerm.Integrate();
 
@@ -130,7 +183,7 @@ Integral parseLine(string polynomial)
         tempPoly.Insert(tempNode);
 
         if(polynomial[0] == 'd') break;
-        else polynomial.erase(0,2);
+        else if(polynomial[0] == '+') polynomial.erase(0,1);
 
     }
     temp.polynomial = tempPoly;
@@ -138,3 +191,37 @@ Integral parseLine(string polynomial)
     return temp;
 }
 
+
+void displayIntegrals(vector<Integral> integrals)
+{
+
+    for(Integral integral : integrals)
+    {
+        integral.polynomial.GetLeftmost()->GetData()->SetFirst(true);
+        integral.polynomial.Print();
+        if(integral.indefinite) cout << " + C" << endl;
+        else
+        {
+            cout << ", " << integral.upperBound << "|" << integral.lowerBound << " = " << setprecision(3) << fixed << evaluate(integral) << endl;
+        }
+    }
+}
+
+double evaluate(Integral integral)
+{
+    double sum = integral.polynomial.Evaluate(integral.upperBound) - integral.polynomial.Evaluate(integral.lowerBound);
+    return sum;
+}
+
+void removeSpaces(string &str)
+{
+    int count = 0;
+ 
+    for (int i = 0; i < (int)str.size(); i++)
+    {
+        if (str[i] != ' ')
+            str[count++] = str[i]; 
+    }
+
+    str.erase(count, str.size() + 1);
+}
