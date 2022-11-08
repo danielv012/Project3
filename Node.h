@@ -17,31 +17,51 @@ class Node
         Node* right;
     public:
         Node();
-        Node(const Node<T>& obj)
-        {
-            delete data;
-            data = new T();
-            *T = *(obj.data);
-        }
+        Node(const Node<T>& obj);
+        Node(T term);
         Node* GetLeft() {return left;}
         Node* GetRight() {return right;}
         T* GetData() {return data;}
-        void SetData(const T& obj)
-        {
-            *data = obj;
-        }
+        void SetData(const T& obj);
+        void SetRight(Node<T>* ptr) {this->left = ptr;}
+        void SetLeft(Node<T>* ptr) {this->right = ptr;}
 
         //------Overloaded Operators-----//
-        Node& operator=(const Node& obj)
-        {
-            if(this != obj)
-            {
-                delete data;
-                data = new T();
-                *T = *(obj.data);
-            }
-            return *this;
-        }
+        Node& operator=(const Node& obj);
 };
 
+template <typename T>
+Node<T>::Node(const Node<T>& obj)
+{
+    delete data;
+    data = new T();
+    data = *(obj.data);
+}
+
+template <typename T>
+Node<T>::Node(T term)
+{
+    this->data = &term;
+}
+
+template <typename T>
+void Node<T>::SetData(const T& obj)
+{
+    *data = obj;
+}
+
+//-------Overloaded Operators---------//
+template <typename T>
+Node<T>& Node<T>::operator=(const Node<T>& obj)
+{
+    if(this != obj)
+    {
+        delete data;
+        data = new T();
+        data = *(obj.data);
+    }
+    return *this;
+}
+
 #endif /* Node_h */
+

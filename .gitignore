@@ -1,2 +1,11 @@
 /sample.txt
 .vscode/settings.json
+.vscode/launch.json
+.gitignore
+main.dSYM/Contents/Info.plist
+.gitignore
+.vscode/tasks.json
+main.dSYM/Contents/Resources/DWARF/main
+main
+a.out
+output

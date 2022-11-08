@@ -11,10 +11,19 @@
 class Term
 {
     private:
-        int coeff;
-        int expon;
+        double coeff;
+        double expon;
     public:
-        void integrate();
+        void Integrate();
+
+        void SetCoeff(int num) {coeff = num;}
+        int GetCoeff() {return coeff;}
+
+        void SetExpon(int num) {expon = num;}
+        int GetExpon() {return expon;}
+
+        //-----Overloaed Operators-----//
+
 };
 
 #endif /* Term_h */

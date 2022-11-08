@@ -40,7 +40,7 @@ class BinTree
         bool Remove(T &key) 
         { 
             Node<T>* node = Search(key);
-            Node<T>* parent = GetParent(node)
+            Node<T>* parent = GetParent(node);
             return RemoveRecursive(root, parent, node); 
         }
 };
@@ -54,21 +54,21 @@ Node<T>* BinTree<T>::SearchRecursive(Node<T>* node, T &key)
         else if (key < node->key) return SearchRecursive(node->GetLeft, key);
         else return SearchRecursive(node->GetRight, key);
     }
-    return null;
+    return nullptr;
 }
 
 template<typename T>
 void BinTree<T>::InsertRecursive(Node<T>* parent, Node<T>* key)
         {
-            if(key->data < parent->data)
+            if(key->GetData() < parent->GetData())
             {
-                if(parent->left == nullptr) parent->left = key;
-                else InsertRecursive(parent->left, key);
+                if(parent->GetLeft() == nullptr) parent->SetLeft(key);
+                else InsertRecursive(parent->GetLeft(), key);
             }
             else
             {
-                if(parent->right == nullptr) parent->right == key;
-                else InsertRecursive(parent->right, key);
+                if(parent->GetRight() == nullptr) parent->SetRight(key);
+                else InsertRecursive(parent->GetRight(), key);
             }
         }
 
@@ -100,6 +100,7 @@ Node<T>* BinTree<T>::RemoveRecursive(Node<T>* root, Node<T>* parent, Node<T>* no
     //internal node with 2 children
     if(node->left != nullptr && node->right != nullptr)
     {
+        Node<T>* succNode, succParent;
         succNode = node->right;
         succParent = node;
         while(succNode->left != nullptr)
