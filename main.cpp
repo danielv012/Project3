@@ -99,24 +99,39 @@ Integral parseLine(string polynomial)
 
     while(polynomial.length() > 0)
     {
-    string term = polynomial.substr(0, polynomial.find(" "));
-    polynomial.erase(polynomial.find(term), term.length() + 1);
+        string term = polynomial.substr(0, polynomial.find(" "));
+        polynomial.erase(polynomial.find(term), term.length() + 1);
 
-    Term tempTerm;
+        Term tempTerm;
 
-    int coefficient = stoi(term.substr(0, term.find('x')));
-    tempTerm.SetCoeff(coefficient);
+        string coeffString = term.substr(0, term.find('x'));
+        tempTerm.SetCoeff(stoi(coeffString));
 
-    term.erase(0, term.find('x') + 2);
+        if(term.size() > coeffString.size() + 1)
+        {
+            term.erase(0, term.find('x') + 2);
 
-    int exponent = stoi(term);
-    tempTerm.SetExpon(exponent);
+            int exponent = stoi(term);
+            tempTerm.SetExpon(exponent);
+        }
+        else if (term.find('x') == -1)
+        {
+            tempTerm.SetExpon(0);
+        }
+        else
+        {
+            tempTerm.SetExpon(1);
+        }
 
-    tempTerm.Integrate();
+        tempTerm.Integrate();
 
-    Node<Term>* tempNode = new Node<Term>(tempTerm);
+        Node<Term> *tempNode = new Node<Term>(tempTerm);
 
-    tempPoly.Insert(tempNode);
+        tempPoly.Insert(tempNode);
+
+        if(polynomial[0] == 'd') break;
+        else polynomial.erase(0,2);
+
     }
     temp.polynomial = tempPoly;
     

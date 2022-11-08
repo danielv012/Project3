@@ -17,18 +17,35 @@ class Node
         Node* right;
     public:
         Node();
-        Node(const Node<T>& obj);
         Node(T term);
+        Node(const Node<T> &obj);
+
         Node* GetLeft() {return left;}
         Node* GetRight() {return right;}
         T* GetData() {return data;}
         void SetData(const T& obj);
-        void SetRight(Node<T>* ptr) {this->left = ptr;}
-        void SetLeft(Node<T>* ptr) {this->right = ptr;}
+        void SetRight(Node<T>* ptr) {this->right = ptr;}
+        void SetLeft(Node<T>* ptr) {this->left = ptr;}
 
         //------Overloaded Operators-----//
         Node& operator=(const Node& obj);
 };
+template <typename T>
+Node<T>::Node()
+{
+    data = T();
+    left = nullptr;
+    right = nullptr;
+}
+
+template <typename T>
+Node<T>::Node(T term)
+{
+    this->data = new T();
+    *(this->data) = term;
+    this->SetLeft(nullptr);
+    this->SetRight(nullptr);
+}
 
 template <typename T>
 Node<T>::Node(const Node<T>& obj)
@@ -36,13 +53,11 @@ Node<T>::Node(const Node<T>& obj)
     delete data;
     data = new T();
     data = *(obj.data);
+    left = obj.left;
+    right = obj.right;
 }
 
-template <typename T>
-Node<T>::Node(T term)
-{
-    this->data = &term;
-}
+
 
 template <typename T>
 void Node<T>::SetData(const T& obj)

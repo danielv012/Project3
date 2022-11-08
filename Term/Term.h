@@ -14,6 +14,9 @@ class Term
         double coeff;
         double expon;
     public:
+        Term();
+        Term(Term &obj);
+
         void Integrate();
 
         void SetCoeff(int num) {coeff = num;}
@@ -24,7 +27,10 @@ class Term
 
         //-----Overloaed Operators-----//
 
-        bool operator==(Term &right);
+        bool operator==(const Term &right);
+        bool operator>(const Term &right);
+        bool operator<(const Term &right);
+        Term& operator=(const Term &obj);
 
 };
 

@@ -7,11 +7,44 @@
 #include <stdio.h>
 #include "Term.h"
 
+//---------Constructors-------//
+
+Term::Term()
+{
+    coeff = 0;
+    expon = 0;
+}
+
+Term::Term(Term &obj)
+{
+    this->coeff = obj.GetCoeff();
+    this->expon = obj.GetExpon();
+}
+
+
+
+//----------------------------//
+
 void Term::Integrate()
 {
-    this->SetExpon(this->GetExpon() + 1);
-    this->SetCoeff(this->GetCoeff() / this->GetExpon());
-    
+    if(this->GetExpon() == 0)
+    {
+        this->SetExpon(1);
+    }
+    else
+    {
+        this->SetExpon(this->GetExpon() + 1);
+        this->SetCoeff(this->GetCoeff() / this->GetExpon());
+    }
+}
+
+
+
+Term& Term::operator=(const Term &obj)
+{
+    this->coeff = obj.coeff;
+    this->expon = obj.expon;
+    return *this;
 }
 
 /**
@@ -21,8 +54,21 @@ void Term::Integrate()
  * @return true 
  * @return false 
  */
-bool Term::operator==(Term &right)
+bool Term::operator==(const Term &right)
 {
-    if(this->GetExpon() == right.GetExpon()) return true;
+    if(this->expon == right.expon) return true;
     return false;
 }
+
+bool Term::operator>(const Term &right)
+{
+    if(this->expon > right.expon) return true;
+    return false;
+}
+
+bool Term::operator<(const Term &right)
+{
+    if(this->expon < right.expon) return true;
+    return false;
+}
+
