@@ -43,6 +43,8 @@ int main()
     ifstream file;
     file.open(fileName);
 
+    //int check = stoi("2");
+
     string polynomial = "";
     while(getline(file, polynomial))
     {
@@ -50,6 +52,7 @@ int main()
         Integral tempPolynomial = parseLine(polynomial);
         integrals.push_back(tempPolynomial);
     }
+
 
     displayIntegrals(integrals);
 
@@ -117,26 +120,49 @@ Integral parseLine(string polynomial)
         Term tempTerm;
 
         string value = "";
-        string bit = polynomial.substr(0, polynomial.find('d'));
-        if(bit.find('x') == string::npos)
-        {
-            char checkChar = polynomial[0];
-            while(checkChar != '-' && checkChar != '+' && checkChar != 'd')
-            {
-                value += checkChar;
-                polynomial.erase(0,1);
-                checkChar = polynomial[0];
-            }
-            tempTerm.SetCoeff(stoi(value));
-            tempTerm.SetExpon(0);
-        }
-        else
-        {
-            string coefficient = polynomial.substr(0, polynomial.find("x"));
-            polynomial.erase(polynomial.find(coefficient), coefficient.length());
 
-            if(coefficient.size() == 0) tempTerm.SetCoeff(1);
-            else tempTerm.SetCoeff(stoi(coefficient));
+        char checkChar = polynomial[0];
+        bool first = true;
+        while(checkChar != '+' && checkChar != 'd' && checkChar != 'x')
+        {
+            if(!first)
+            {
+                if(checkChar == '-') break;
+            }
+            value += checkChar;
+            polynomial.erase(0,1);
+            checkChar = polynomial[0];
+            first = false;
+        }
+        
+        if(value == "-")
+        {
+            value = "-1";
+        }
+        else if(value.size() == 0) value = "1";
+
+        tempTerm.SetCoeff(stoi(value));
+
+        // if(bit.find('x') == string::npos)
+        // {
+        //     char checkChar = polynomial[0];
+        //     while(checkChar != '-' && checkChar != '+' && checkChar != 'd')
+        //     {
+        //         value += checkChar;
+        //         polynomial.erase(0,1);
+        //         checkChar = polynomial[0];
+        //     }
+        //     tempTerm.SetCoeff(stoi(value));
+        //     tempTerm.SetExpon(0);
+        // }
+        // else
+        // {
+        //     string coefficient = polynomial.substr(0, polynomial.find("x"));
+        //     polynomial.erase(polynomial.find(coefficient), coefficient.length());
+
+        //     if(coefficient.size() == 0) tempTerm.SetCoeff(1);
+        //     else if(coefficient.size() == 1 && coefficient[0] == '-') tempTerm.SetCoeff(-1);
+        //     else tempTerm.SetCoeff(stoi(coefficient));
 
         if(polynomial[0] != 'x')
         {
@@ -166,12 +192,13 @@ Integral parseLine(string polynomial)
             checkChar = polynomial[0];
         }
         
+        //cout << exponent << endl;
         double exponentNum = stoi(exponent);
         if(negative) exponentNum *= -1;
         tempTerm.SetExpon(exponentNum);
 
         }
-        }
+        
         
 
         tempTerm.Integrate();
@@ -208,7 +235,7 @@ void displayIntegrals(vector<Integral> integrals)
 double evaluate(Integral integral)
 {
     double sum = integral.polynomial.Evaluate(integral.upperBound) - integral.polynomial.Evaluate(integral.lowerBound);
-    return sum;
+    return sum*-1;
 }
 
 void removeSpaces(string &str)

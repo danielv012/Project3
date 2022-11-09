@@ -43,21 +43,37 @@ void Term::Integrate()
     if(this->GetExpon() == 0)
     {
         this->SetExpon(1);
+        this->SetCoeffStr(to_string((int)(this->GetCoeff()) * (this->GetCoeff() < 0 ? -1 : 1)));
     }
     else
     {
         this->SetExpon(this->GetExpon() + 1);
         this->SetExponStr(to_string((int)(this->GetExpon())));
 
-        double oldCoeff = this->GetCoeff();
+        int oldCoeff = (int)this->GetCoeff();
         this->SetCoeff(this->GetCoeff() / this->GetExpon());
         if(fmod(this->GetCoeff(),1) == 0)
         {
-            this->SetCoeffStr(to_string((int)(this->GetCoeff())));
+            this->SetCoeffStr(to_string((int)(this->GetCoeff()) * (this->GetCoeff() < 0 ? -1 : 1)));
         }
         else
         {
-        string coeffStr = "(" + to_string(oldCoeff).substr(0,to_string(oldCoeff).find('.'))  + "/" + to_string((int)(this->GetExpon())) + ")";
+            string coeffStr = "";
+        if(oldCoeff < 0 && this->GetExpon() < 0)
+        {
+            oldCoeff *= -1;
+            coeffStr = Simplify(oldCoeff, ((int)(this->GetExpon()) * -1));
+        }
+        else if(oldCoeff < 0)
+        {
+            oldCoeff *= -1;
+            coeffStr = Simplify(oldCoeff,((int)(this->GetExpon())));
+        }
+        else
+        {
+            coeffStr = Simplify(oldCoeff, ((int)(this->GetExpon()) * (this->GetExpon() < 0 ? -1 : 1)));
+        }
+        
         this->SetCoeffStr(coeffStr);
         }
     }
@@ -99,3 +115,45 @@ bool Term::operator<(const Term &right)
     return false;
 }
 
+string Term::Simplify(int num, int denom)
+{
+    string fraction = "";
+
+    if(denom == 0
+    || denom == 1
+    || num == 0
+    || num == 1)
+    {
+        fraction = "(" + to_string(num) + "/" + to_string(denom) + ")";
+    }
+    else
+    {
+        int gcdNum = gcd(num, denom);
+        num /= gcdNum;
+        denom /= gcdNum;
+        fraction = "(" + to_string(num) + "/" + to_string(denom) + ")";
+    }
+
+    return fraction;
+}
+
+int Term::gcd(int x, int y)
+{
+    x = abs(x);
+    y = abs(y);
+
+    if(y == 0)
+    {
+        return x;
+    }
+    else if(x > y)
+    {
+        return gcd(y, x%y);
+    }
+    else if(x < y)
+    {
+        return gcd(x, y%x);
+    }
+
+    return x;
+}

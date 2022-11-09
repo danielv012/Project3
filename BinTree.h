@@ -9,6 +9,11 @@
 #define BinTree_h
 #include "Node.h"
 #include <cmath>
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <iomanip>
+#include <vector>
 
 using namespace std;
 
@@ -96,7 +101,12 @@ void BinTree<T>::InsertRecursive(Node<T>* parent, Node<T>* key)
     }
     else if(*(key->GetData()) == *(parent->GetData()))
     {
+        double oldCoeff = parent->GetData()->GetCoeff();
         parent->GetData()->SetCoeff(parent->GetData()->GetCoeff() + key->GetData()->GetCoeff());
+        double multiplier = parent->GetData()->GetCoeff() / oldCoeff;
+        string oldNumerator = parent->GetData()->GetCoeffStr().substr(1,  parent->GetData()->GetCoeffStr().find('/') - 1);
+        int oldNum = stoi(oldNumerator);
+        parent->GetData()->SetCoeffStr(parent->GetData()->GetCoeffStr().replace(((parent->GetData()->GetCoeffStr()).find(oldNumerator)),  oldNumerator.length(), to_string((int)(oldNum*multiplier))));
     }
     else
     {
@@ -186,9 +196,25 @@ void BinTree<T>::PrintRecursive(Node<T>* node)
   T term = *(node->GetData()); 
   if(term.IsFirst())
   {
-    cout << ((term.GetCoeffStr() == "1" || term.GetCoeffStr() == "0") ? "" : term.GetCoeffStr())
-     << (term.GetCoeffStr() == "0" ? "" : "x");
-    cout << (term.GetExpon() > 1 ? "^" : "") << term.GetExponStr();
+    if(term.GetCoeff() < 0)
+    {
+        if(fmod(term.GetCoeff(),1) != 0)
+        {
+            cout << term.GetCoeffStr()[0] << "-" << term.GetCoeffStr().substr(1);
+        }
+        else 
+        {
+            cout << "-";
+            cout << ((term.GetCoeffStr() == "1" || term.GetCoeffStr() == "0") ? "" : term.GetCoeffStr());
+        }
+    }
+    else
+    {
+        cout << ((term.GetCoeffStr() == "1" || term.GetCoeffStr() == "0") ? "" : term.GetCoeffStr());
+    }
+    
+    cout << (term.GetCoeffStr() == "0" ? "" : "x");
+    cout << (term.GetExpon() > 1 || term.GetExpon() < 0 ? "^" : "") << term.GetExponStr();
   }
   else
   {
@@ -196,11 +222,11 @@ void BinTree<T>::PrintRecursive(Node<T>* node)
     if(term.GetCoeff() < 0)
     {
         cout << "- ";
-        term.SetCoeffStr(term.GetCoeffStr().substr(1));
+        term.SetCoeffStr(term.GetCoeffStr());
     }
     else cout << "+ ";
     cout << ((term.GetCoeffStr()== "1" || term.GetCoeffStr() == "0") ? "" : term.GetCoeffStr())
-     << (term.GetCoeffStr() == "0" ? "" : "x") << (term.GetExpon() > 1 ? "^" : "") << (term.GetExpon() > 1 ? term.GetExponStr() : "");
+     << (term.GetCoeffStr() == "0" ? "" : "x") << (term.GetExpon() > 1 || term.GetExpon() < 0 ? "^" : "") << (term.GetExpon() > 1 || term.GetExpon() < 0 ? term.GetExponStr() : "");
   }
   //---------------------//
 

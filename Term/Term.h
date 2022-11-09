@@ -18,6 +18,9 @@ class Term
         string coeffStr;
         string exponStr;
         bool first;
+
+        string Simplify(int num, int denom);
+        int gcd(int x, int y);
     public:
         Term();
         Term(Term &obj);
